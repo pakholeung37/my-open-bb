@@ -1,0 +1,13 @@
+watchlist:
+  - symbol: AAPL
+    display_name: Apple
+    enabled: true
+    priority: 1
+  - symbol: MSFT
+    display_name: Microsoft
+    enabled: true
+    priority: 2
+  - symbol: SPY
+    display_name: SPDR S&P 500 ETF
+    enabled: true
+    priority: 3

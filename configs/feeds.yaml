@@ -1,0 +1,12 @@
+feeds:
+  - source_id: reuters_business
+    name: Reuters Business
+    url: https://feeds.reuters.com/reuters/businessNews
+    category: macro
+    enabled: true
+
+  - source_id: yahoo_finance_news
+    name: Yahoo Finance News
+    url: https://finance.yahoo.com/news/rssindex
+    category: equities
+    enabled: true

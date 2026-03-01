@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    container_name: openbb-platform-api
+    environment:
+      APP_DATABASE_PATH: /data/openbb_platform.db
+      APP_WATCHLIST_PATH: /configs/watchlist.yaml
+      APP_FEEDS_PATH: /configs/feeds.yaml
+      APP_REFRESH_INTERVAL_MINUTES: 5
+      APP_MANUAL_REFRESH_COOLDOWN_SECONDS: 60
+      APP_FRONTEND_ORIGIN: http://localhost:5173
+    volumes:
+      - ../configs:/configs:ro
+      - ../data:/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=5)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    container_name: openbb-platform-web
+    environment:
+      VITE_PROXY_TARGET: http://api:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      api:
+        condition: service_healthy
