@@ -25,7 +25,7 @@ cd infra
 docker compose up --build
 ```
 
-- Web: http://localhost:5173
+- Web: http://localhost:7000
 - API docs: http://localhost:8000/docs
 
 ## Run without Docker
@@ -36,7 +36,7 @@ docker compose up --build
 ./scripts/dev-start.sh
 ```
 
-This starts API (`:8000`) and web (`:5173`) together, and stops both on `Ctrl+C`.
+This starts API (`:8000`) and web (`:7000`) together, and stops both on `Ctrl+C`.
 
 ### API
 

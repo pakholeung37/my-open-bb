@@ -10,7 +10,7 @@ services:
       APP_FEEDS_PATH: /configs/feeds.yaml
       APP_REFRESH_INTERVAL_MINUTES: 5
       APP_MANUAL_REFRESH_COOLDOWN_SECONDS: 60
-      APP_FRONTEND_ORIGIN: http://localhost:5173
+      APP_FRONTEND_ORIGIN: http://localhost:7000
     volumes:
       - ../configs:/configs:ro
       - ../data:/data
@@ -30,7 +30,7 @@ services:
     environment:
       VITE_PROXY_TARGET: http://api:8000
     ports:
-      - "5173:5173"
+      - "7000:7000"
     depends_on:
       api:
         condition: service_healthy

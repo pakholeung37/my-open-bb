@@ -11,5 +11,5 @@ COPY apps/web/src /app/src
 
 RUN bun install --frozen-lockfile
 
-EXPOSE 5173
-CMD ["bun", "run", "dev", "--host", "0.0.0.0", "--port", "5173"]
+EXPOSE 7000
+CMD ["bun", "run", "dev", "--host", "0.0.0.0", "--port", "7000"]

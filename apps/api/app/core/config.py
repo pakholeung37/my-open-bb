@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     refresh_interval_minutes: int = 5
     manual_refresh_cooldown_seconds: int = 60
-    frontend_origin: str = "http://localhost:5173"
+    frontend_origin: str = "http://localhost:7000"
 
     database_path: Path = Field(default_factory=lambda: _default_repo_root() / "data" / "openbb_platform.db")
     watchlist_path: Path = Field(default_factory=lambda: _default_repo_root() / "configs" / "watchlist.yaml")

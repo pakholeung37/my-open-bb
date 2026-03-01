@@ -57,7 +57,7 @@ If a check cannot run, state exactly why.
 
 - One-command local startup from repo root:
   - `./scripts/dev-start.sh`
-- This script starts backend (`:8000`) and frontend (`:5173`) together.
+- This script starts backend (`:8000`) and frontend (`:7000`) together.
 
 ## 6. Dependency policy
 

@@ -4,7 +4,7 @@
 
 1. `cd infra`
 2. `docker compose up --build`
-3. Open `http://localhost:5173`
+3. Open `http://localhost:7000`
 
 ## Manual refresh
 
