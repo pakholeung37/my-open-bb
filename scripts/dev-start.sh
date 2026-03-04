@@ -48,7 +48,7 @@ ensure_api_env() {
 
   if [[ ! -x "$API_DIR/.venv314/bin/uvicorn" ]]; then
     log "Installing backend dependencies"
-    (cd "$API_DIR" && source .venv314/bin/activate && uv pip install -e '.[dev]')
+    (cd "$API_DIR" && source .venv314/bin/activate && uv pip install -e '.[dev,market]')
   fi
 }
 

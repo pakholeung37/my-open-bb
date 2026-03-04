@@ -22,13 +22,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     init_db(settings.database_path)
 
     ingestion_service = get_ingestion_service()
-    scheduler = SchedulerService(settings.refresh_interval_minutes, ingestion_service.refresh_all)
-    scheduler.start()
+    scheduler: SchedulerService | None = None
+    if settings.enable_scheduler:
+        scheduler = SchedulerService(settings.refresh_interval_minutes, ingestion_service.refresh_all)
+        scheduler.start()
 
     app.state.scheduler = scheduler
     yield
 
-    scheduler.shutdown()
+    if scheduler is not None:
+        scheduler.shutdown()
 
 
 settings = get_settings()

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 
-from app.db import get_connection
+from app.db import fetchall_dicts, get_connection
 
 
 class IngestionRepository:
@@ -16,7 +17,7 @@ class IngestionRepository:
                 INSERT INTO ingestion_runs(job_type, status, message, started_at, finished_at)
                 VALUES (?, ?, ?, ?, ?)
                 """,
-                (job_type, status, message, started_at, finished_at),
+                [job_type, status, message, started_at, finished_at],
             )
 
     def latest_by_job_type(self) -> dict[str, dict]:
@@ -31,13 +32,21 @@ class IngestionRepository:
           ON r1.job_type = r2.job_type AND r1.finished_at = r2.max_finished
         """
         with get_connection(self.database_path) as conn:
-            rows = conn.execute(query).fetchall()
+            rows = fetchall_dicts(conn, query)
         return {
             row["job_type"]: {
                 "status": row["status"],
                 "message": row["message"],
-                "started_at": row["started_at"],
-                "finished_at": row["finished_at"],
+                "started_at": _to_iso(row["started_at"]),
+                "finished_at": _to_iso(row["finished_at"]),
             }
             for row in rows
         }
+
+
+def _to_iso(value: object) -> str:
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc).isoformat()
+        return value.astimezone(timezone.utc).isoformat()
+    return str(value)

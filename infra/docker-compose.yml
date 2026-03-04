@@ -5,11 +5,15 @@ services:
       dockerfile: apps/api/Dockerfile
     container_name: openbb-platform-api
     environment:
-      APP_DATABASE_PATH: /data/openbb_platform.db
+      APP_DATABASE_PATH: /data/openbb_platform.duckdb
       APP_WATCHLIST_PATH: /configs/watchlist.yaml
       APP_FEEDS_PATH: /configs/feeds.yaml
       APP_REFRESH_INTERVAL_MINUTES: 5
       APP_MANUAL_REFRESH_COOLDOWN_SECONDS: 60
+      APP_MARKET_QUOTE_TTL_SECONDS: 300
+      APP_MARKET_DEFAULT_LOOKBACK_DAYS: 30
+      APP_MARKET_PROVIDER: yfinance
+      APP_ENABLE_SCHEDULER: true
       APP_FRONTEND_ORIGIN: http://localhost:7000
     volumes:
       - ../configs:/configs:ro

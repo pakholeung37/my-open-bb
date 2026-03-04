@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
-from app.db import get_connection
+from app.db import fetchall_dicts, fetchone_dict, get_connection
 from app.services.feed_service import NormalizedFeedItem
 
 
@@ -18,13 +19,16 @@ class FeedRepository:
         inserted = 0
         with get_connection(self.database_path) as conn:
             for item in items:
-                cursor = conn.execute(
+                exists = fetchone_dict(conn, "SELECT 1 AS found FROM feed_items WHERE item_hash = ?", [item.item_hash])
+                if exists:
+                    continue
+                conn.execute(
                     """
-                    INSERT OR IGNORE INTO feed_items
+                    INSERT INTO feed_items
                     (source_id, title, summary, url, published_at, symbol, tags_json, item_hash)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """,
-                    (
+                    [
                         item.source_id,
                         item.title,
                         item.summary,
@@ -33,9 +37,9 @@ class FeedRepository:
                         item.symbol,
                         json.dumps(item.tags, ensure_ascii=True),
                         item.item_hash,
-                    ),
+                    ],
                 )
-                inserted += cursor.rowcount
+                inserted += 1
         return inserted
 
     def list_items(
@@ -64,7 +68,8 @@ class FeedRepository:
         where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
 
         with get_connection(self.database_path) as conn:
-            rows = conn.execute(
+            rows = fetchall_dicts(
+                conn,
                 f"""
                 SELECT id, source_id, title, summary, url, published_at, symbol, tags_json
                 FROM feed_items
@@ -73,21 +78,33 @@ class FeedRepository:
                 LIMIT ? OFFSET ?
                 """,
                 [*params, limit, offset],
-            ).fetchall()
+            )
 
         output = []
         for row in rows:
             item = dict(row)
+            item["published_at"] = _to_iso(item.get("published_at"))
             item["tags"] = json.loads(item.pop("tags_json") or "[]")
             output.append(item)
         return output
 
     def newest_published_at(self) -> str | None:
         with get_connection(self.database_path) as conn:
-            row = conn.execute(
+            row = fetchone_dict(
+                conn,
                 """
                 SELECT COALESCE(MAX(published_at), MAX(created_at)) AS newest
                 FROM feed_items
-                """
-            ).fetchone()
-        return row["newest"] if row else None
+                """,
+            )
+        return _to_iso(row["newest"]) if row else None
+
+
+def _to_iso(value: object) -> str | None:
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc).isoformat()
+        return value.astimezone(timezone.utc).isoformat()
+    return str(value)

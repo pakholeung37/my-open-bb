@@ -5,7 +5,7 @@ This file defines execution standards for coding agents in this repository.
 ## 1. Stack and toolchain
 
 - Frontend (`apps/web`): React + Vite + TypeScript + Bun + Biome.
-- Backend (`apps/api`): FastAPI + SQLite + uv-managed Python environment.
+- Backend (`apps/api`): FastAPI + DuckDB + uv-managed Python environment.
 - Do not add ESLint or Prettier. Frontend lint/format is Biome-only.
 
 ## 2. Required checks before finishing work

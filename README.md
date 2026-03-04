@@ -5,8 +5,8 @@ MVP implementation of a personal information platform powered by OpenBB.
 ## Scope in this repository
 
 - FastAPI backend with 5-minute scheduler
-- SQLite persistence layer
-- RSS feed ingestion and watchlist market snapshots
+- DuckDB persistence layer
+- RSS feed ingestion and market data APIs powered by OpenBB (`provider=yfinance`)
 - React + Vite frontend with 3 pages
 - Docker Compose local runtime
 
@@ -44,7 +44,7 @@ This starts API (`:8000`) and web (`:7000`) together, and stops both on `Ctrl+C`
 cd apps/api
 uv venv .venv314 --python 3.14
 source .venv314/bin/activate
-uv pip install -e '.[dev]'
+uv pip install -e '.[dev,market]'
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
@@ -69,5 +69,12 @@ Set `VITE_PROXY_TARGET` if your API runs on a different host.
 
 ## Notes
 
-- If OpenBB credentials/providers are not configured, market quote refresh may return empty snapshots.
+- Market endpoints are strict: upstream failures return `5xx` instead of `200` empty payloads.
+- Install backend with `.[market]` extras so OpenBB is available for quote/bar fetches.
 - Feed ingestion remains available and can be tested independently.
+
+## Agent-first market endpoints
+
+- `GET /api/v1/market/quotes?symbols=AAPL,MSFT,SPY&force_refresh=false`
+- `GET /api/v1/market/bars?symbol=AAPL&interval=1d&lookback_days=30&force_refresh=false`
+- `POST /api/v1/market/refresh`

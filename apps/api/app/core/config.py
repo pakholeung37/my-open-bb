@@ -22,9 +22,13 @@ class Settings(BaseSettings):
     environment: str = "development"
     refresh_interval_minutes: int = 5
     manual_refresh_cooldown_seconds: int = 60
+    market_quote_ttl_seconds: int = 300
+    market_default_lookback_days: int = 30
+    market_provider: str = "yfinance"
+    enable_scheduler: bool = True
     frontend_origin: str = "http://localhost:7000"
 
-    database_path: Path = Field(default_factory=lambda: _default_repo_root() / "data" / "openbb_platform.db")
+    database_path: Path = Field(default_factory=lambda: _default_repo_root() / "data" / "openbb_platform.duckdb")
     watchlist_path: Path = Field(default_factory=lambda: _default_repo_root() / "configs" / "watchlist.yaml")
     feeds_path: Path = Field(default_factory=lambda: _default_repo_root() / "configs" / "feeds.yaml")
 

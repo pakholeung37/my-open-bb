@@ -30,6 +30,7 @@ From `apps/web`:
 
 - Environment manager: `uv`.
 - Python version: `3.14` for local dev; package floor `>=3.11`.
+- Persistence: `DuckDB` (single-file local database).
 - Quality gate: `ruff`, `mypy`, `pytest`.
 
 ### Python commands
@@ -38,7 +39,7 @@ From `apps/api`:
 
 - `uv venv .venv314 --python 3.14`
 - `source .venv314/bin/activate`
-- `uv pip install -e '.[dev]'`
+- `uv pip install -e '.[dev,market]'`
 - `ruff check app tests`
 - `mypy app`
 - `pytest`
